@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+
 import { supabase } from "../utils/supabaseClient";
+import { useStore } from "../utils/store";
+
 import Auth from "../components/Auth";
 import Account from "../components/Account";
-import type { Session } from "@supabase/supabase-js";
 
 const Home: NextPage = () => {
-  const [session, setSession] = useState<Session | null>(null);
+  const { session, setSession } = useStore();
 
   useEffect(() => {
     setSession(supabase.auth.session());
@@ -14,7 +16,7 @@ const Home: NextPage = () => {
     supabase.auth.onAuthStateChange((_, session) => {
       setSession(session);
     });
-  }, []);
+  }, [setSession]);
 
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center">
