@@ -19,7 +19,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <>
       <h1 className="text-3xl">Login</h1>
       <p>Sign in via magic link with your email below</p>
       <div className="p-4" />
@@ -45,6 +45,6 @@ export default function Auth() {
           <span>{loading ? "Loading" : "Send magic link"}</span>
         </button>
       </form>
-    </div>
+    </>
   );
 }

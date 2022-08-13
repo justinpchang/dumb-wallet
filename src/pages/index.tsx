@@ -18,13 +18,7 @@ const Home: NextPage = () => {
     });
   }, [setSession]);
 
-  return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center">
-      <div className="container">
-        {!session ? <Auth /> : <Account session={session} />}
-      </div>
-    </div>
-  );
+  return !session ? <Auth /> : <Account session={session} />;
 };
 
 export default Home;
