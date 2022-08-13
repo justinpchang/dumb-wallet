@@ -1,5 +1,10 @@
 import type { Session } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
+import {
+  updateUser as _updateUser,
+  getUser as _getUser,
+} from "../requests/user.requests";
+import { User } from "../types/user.types";
 import { supabase } from "../utils/supabaseClient";
 
 interface AccountProps {
@@ -8,29 +13,17 @@ interface AccountProps {
 
 export default function Account({ session }: AccountProps) {
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState("");
-  const [website, setWebsite] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   useEffect(() => {
-    async function getProfile() {
+    async function getUser() {
       try {
         setLoading(true);
-        const user = supabase.auth.user();
+        const user: User = await _getUser();
 
-        let { data, error, status } = await supabase
-          .from("profiles")
-          .select("username, website, avatar_url")
-          .eq("id", user!.id)
-          .single();
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
-          setUsername(data.username);
-          setWebsite(data.website);
-          setAvatarUrl(data.avatar_url);
-        }
+        setFirstName(user.first_name);
+        setLastName(user.last_name);
       } catch (error: any) {
         alert(error.message);
       } finally {
@@ -38,74 +31,69 @@ export default function Account({ session }: AccountProps) {
       }
     }
 
-    getProfile();
+    getUser();
   }, []);
 
-  async function updateProfile({
-    username,
-    website,
-    avatarUrl,
+  const updateUser = async ({
+    firstName,
+    lastName,
   }: {
-    username: string;
-    website: string;
-    avatarUrl: string;
-  }) {
+    firstName: string;
+    lastName: string;
+  }) => {
     try {
       setLoading(true);
-      const user = supabase.auth.user();
-
-      const updates = {
-        id: user!.id,
-        username,
-        website,
-        avatar_url: avatarUrl,
-        updated_at: new Date(),
-      };
-
-      let { error } = await supabase.from("profiles").upsert(updates, {
-        returning: "minimal",
+      await _updateUser({
+        first_name: firstName,
+        last_name: lastName,
       });
-
-      if (error) throw error;
     } catch (error: any) {
       alert(error.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <form
-      className="flex flex-col justify-center items-center"
-      onSubmit={(e) => {
-        e.preventDefault();
-        updateProfile({ username, website, avatarUrl });
-      }}
-    >
-      <label>
-        Email
-        <input type="email" value={session?.user?.email} disabled />
-      </label>
-      <label>
-        Username
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      <label>
-        Website
-        <input
-          type="text"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </label>
-      <button type="submit" disabled={loading}>
-        {loading ? "Loading" : "Update"}
-      </button>
-      <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
-    </form>
+    <>
+      <h1 className="text-3xl">Profile Page</h1>
+      {!loading ? (
+        <form
+          className="flex flex-col justify-center items-center"
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateUser({ firstName, lastName });
+          }}
+        >
+          <label>
+            Email
+            <input type="email" value={session?.user?.email} disabled />
+          </label>
+          <label>
+            First name
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </label>
+          <label>
+            Last name
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </label>
+          <button type="submit" disabled={loading}>
+            {loading ? "Loading" : "Update"}
+          </button>
+          <br />
+          <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
+        </form>
+      ) : (
+        <h1>Loading...</h1>
+      )}
+    </>
   );
 }
