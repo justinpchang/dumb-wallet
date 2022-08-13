@@ -18,7 +18,7 @@ const Home: NextPage = () => {
     });
   }, [setSession]);
 
-  return !session ? <Auth /> : <Account session={session} />;
+  return !session ? <Auth /> : <Account />;
 };
 
 export default Home;

@@ -1,17 +1,17 @@
-import type { Session } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import {
   updateUser as _updateUser,
   getUser as _getUser,
 } from "../requests/user.requests";
 import { User } from "../types/user.types";
+import { useStore } from "../utils/store";
 import { supabase } from "../utils/supabaseClient";
 
-interface AccountProps {
-  session: Session | null;
-}
+export default function Account() {
+  const { session } = useStore();
+  const router = useRouter();
 
-export default function Account({ session }: AccountProps) {
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -58,39 +58,46 @@ export default function Account({ session }: AccountProps) {
     <>
       <h1 className="text-3xl">Profile Page</h1>
       {!loading ? (
-        <form
-          className="flex flex-col justify-center items-center"
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateUser({ firstName, lastName });
-          }}
-        >
-          <label>
-            Email
-            <input type="email" value={session?.user?.email} disabled />
-          </label>
-          <label>
-            First name
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </label>
-          <label>
-            Last name
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </label>
-          <button type="submit" disabled={loading}>
-            {loading ? "Loading" : "Update"}
+        <>
+          <div className="py-4" />
+          <button onClick={() => router.push("/transactions")}>
+            Go to Transactions
           </button>
-          <br />
+          <div className="py-4" />
+          <form
+            className="flex flex-col justify-center items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateUser({ firstName, lastName });
+            }}
+          >
+            <label>
+              Email
+              <input type="email" value={session?.user?.email} disabled />
+            </label>
+            <label>
+              First name
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </label>
+            <label>
+              Last name
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </label>
+            <button type="submit" disabled={loading}>
+              {loading ? "Loading" : "Update"}
+            </button>
+          </form>
+          <div className="py-4" />
           <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
-        </form>
+        </>
       ) : (
         <h1>Loading...</h1>
       )}
