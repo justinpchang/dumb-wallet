@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { createTransaction } from "../../requests/transaction.requests";
@@ -34,7 +35,7 @@ const AddTransaction: NextPage = () => {
     <>
       <h1 className="text-3xl">Add Transaction</h1>
       <div className="py-4" />
-      <button onClick={() => router.push("/transactions")}>Go back</button>
+      <Link href="/transactions">Go back</Link>
       <div className="py-4" />
       <form
         className="flex flex-col justify-center items-center"
@@ -84,7 +85,7 @@ const AddTransaction: NextPage = () => {
             !description
           }
         >
-          {isLoading ? "Loading" : "Update"}
+          {isLoading ? "Loading" : "Add Transaction"}
         </button>
       </form>
     </>

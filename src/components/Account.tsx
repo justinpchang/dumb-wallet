@@ -22,8 +22,8 @@ export default function Account() {
         setLoading(true);
         const user: User = await _getUser();
 
-        setFirstName(user.first_name);
-        setLastName(user.last_name);
+        setFirstName(user?.first_name);
+        setLastName(user?.last_name);
       } catch (error: any) {
         alert(error.message);
       } finally {
@@ -31,8 +31,8 @@ export default function Account() {
       }
     }
 
-    getUser();
-  }, []);
+    if (session) getUser();
+  }, [session]);
 
   const updateUser = async ({
     firstName,
