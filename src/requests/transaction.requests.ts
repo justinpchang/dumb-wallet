@@ -9,7 +9,7 @@ export const getTransactions = async (): Promise<Transaction[]> => {
     .from("transactions")
     .select("id, transaction_type, amount, description, notes, posted_at")
     .eq("user_id", user.id)
-    .order("posted_at", { ascending: true });
+    .order("posted_at", { ascending: false });
 
   if (error && status !== 406) throw error;
 
