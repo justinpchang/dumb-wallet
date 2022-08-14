@@ -1,13 +1,6 @@
-import { User } from "../types/user.types";
+import type { User } from "../types/user.types";
+import { checkUser } from "../utils/requests";
 import { supabase } from "../utils/supabaseClient";
-
-const checkUser = () => {
-  const user = supabase.auth.user();
-
-  if (!user) throw "Please log in.";
-
-  return user;
-};
 
 export const getUser = async (): Promise<User> => {
   const user = checkUser();
