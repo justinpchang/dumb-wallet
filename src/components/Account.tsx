@@ -24,6 +24,7 @@ export default function Account() {
 
         setFirstName(user?.first_name);
         setLastName(user?.last_name);
+        updateUser({ firstName: user?.first_name, lastName: user?.last_name });
       } catch (error: any) {
         alert(error.message);
       } finally {
