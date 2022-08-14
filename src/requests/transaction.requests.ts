@@ -14,3 +14,19 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 
   return data as Transaction[];
 };
+
+export const createTransaction = async (transaction: Transaction) => {
+  const user = checkUser();
+
+  let { error, status } = await supabase.from("transactions").insert([
+    {
+      user_id: user.id,
+      transaction_type: transaction.transaction_type,
+      amount: transaction.amount,
+      description: transaction.description,
+      notes: transaction.notes,
+    },
+  ]);
+
+  if (error && status !== 406) throw error;
+};
