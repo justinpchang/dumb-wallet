@@ -2,15 +2,15 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {
-  getTransaction,
-  updateTransaction,
-} from "../../requests/transaction.requests";
+import useStore from "../../store/useStore";
+import { updateTransaction } from "../../requests/transaction.requests";
 import type { TransactionType } from "../../types/transaction.types";
 
 const EditTransaction: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
+
+  const { getTransactionById } = useStore();
 
   const [isLoading, setIsLoading] = useState(true);
   const [type, setType] = useState<TransactionType>("EXPENSE");
@@ -19,15 +19,21 @@ const EditTransaction: NextPage = () => {
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (id)
-      getTransaction(id as string).then((transaction) => {
-        setType(transaction.transaction_type);
-        setAmount(transaction.amount.toString());
-        setDescription(transaction.description);
-        setNotes(transaction.notes);
-        setIsLoading(false);
-      });
-  }, [id]);
+    if (id) {
+      const transaction = getTransactionById(id as string);
+
+      if (!transaction) {
+        router.push("/transactions");
+        return;
+      }
+
+      setType(transaction.transaction_type);
+      setAmount(transaction.amount.toString());
+      setDescription(transaction.description);
+      setNotes(transaction.notes);
+      setIsLoading(false);
+    }
+  }, [id, getTransactionById, router]);
 
   const handleSubmit = async () => {
     setIsLoading(true);

@@ -1,16 +1,17 @@
 import { format } from "date-fns";
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getTransactions } from "../requests/transaction.requests";
+import useStore from "../store/useStore";
 import type { Transaction } from "../types/transaction.types";
 
 const Transactions: NextPage = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { transactions, setTransactions } = useStore();
 
   useEffect(() => {
     getTransactions().then((transactions) => setTransactions(transactions));
-  }, []);
+  }, [setTransactions]);
 
   const transactionsByMonth = new Map<string, Transaction[]>();
   transactions.forEach((transaction: Transaction) => {

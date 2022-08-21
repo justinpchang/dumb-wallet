@@ -4,7 +4,7 @@ import type { Session } from "@supabase/supabase-js";
 
 export interface AuthSlice {
   session: Session | null;
-  setSession: (newSession: Session | null) => void;
+  setSession: (newSession: Session | null) => any;
 }
 
 const createAuthSlice: StateCreator<State, [], [], AuthSlice> = (set) => ({
