@@ -1,8 +1,8 @@
-import create, { StateCreator } from "zustand";
+import type { StateCreator } from "zustand";
+import { State } from "./useStore";
 import type { Session } from "@supabase/supabase-js";
-import { Transaction } from "../types/transaction.types";
 
-interface AuthSlice {
+export interface AuthSlice {
   session: Session | null;
   setSession: (newSession: Session | null) => void;
 }
@@ -13,8 +13,4 @@ const createAuthSlice: StateCreator<State, [], [], AuthSlice> = (set) => ({
     set(() => ({ session: newSession })),
 });
 
-type State = AuthSlice;
-
-export const useStore = create<State>()((...a) => ({
-  ...createAuthSlice(...a),
-}));
+export default createAuthSlice;

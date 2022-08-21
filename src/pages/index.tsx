@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { useEffect } from "react";
 
 import { supabase } from "../utils/supabaseClient";
-import { useStore } from "../utils/store";
+import useStore from "../store/useStore";
 
 import Auth from "../components/Auth";
 import Account from "../components/Account";

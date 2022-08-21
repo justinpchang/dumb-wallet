@@ -5,7 +5,7 @@ import {
   getUser as _getUser,
 } from "../requests/user.requests";
 import { User } from "../types/user.types";
-import { useStore } from "../utils/store";
+import useStore from "../store/useStore";
 import { supabase } from "../utils/supabaseClient";
 
 export default function Account() {
