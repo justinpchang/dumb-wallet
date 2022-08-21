@@ -3,7 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useStore from "../../store/useStore";
-import { updateTransaction } from "../../requests/transaction.requests";
+import {
+  getTransaction,
+  getTransactions,
+  updateTransaction,
+} from "../../requests/transaction.requests";
 import type { TransactionType } from "../../types/transaction.types";
 
 const EditTransaction: NextPage = () => {
@@ -19,9 +23,12 @@ const EditTransaction: NextPage = () => {
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (id) {
-      const transaction = getTransactionById(id as string);
-
+    async function fetchTransaction(id: string) {
+      let transaction = getTransactionById(id);
+      if (!transaction) {
+        transaction = await getTransaction(id);
+        getTransactions();
+      }
       if (!transaction) {
         router.push("/transactions");
         return;
@@ -32,6 +39,10 @@ const EditTransaction: NextPage = () => {
       setDescription(transaction.description);
       setNotes(transaction.notes);
       setIsLoading(false);
+    }
+
+    if (id) {
+      fetchTransaction(id as string);
     }
   }, [id, getTransactionById, router]);
 
