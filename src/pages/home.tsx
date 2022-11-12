@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/formatters";
-import { Animated, List } from "../components/library";
+import { Animated, Button, List } from "../components/library";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -17,15 +17,8 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="flex mb-6 gap-3">
-        <button
-          onClick={() => refreshTransactions()}
-          className="px-3 py-2 bg-white border shadow hover:bg-slate-100 active:shadow-inner"
-        >
-          Refresh
-        </button>
-        <button className="px-3 py-2 bg-white border shadow hover:bg-slate-100 active:shadow-inner">
-          Add Transaction
-        </button>
+        <Button onClick={() => refreshTransactions()}>Refresh</Button>
+        <Button onClick={() => {}}>Add Transaction</Button>
       </div>
       {groupedTransactions.map((month) => (
         <List.Container key={`tm-${month.label}`}>
