@@ -49,7 +49,7 @@ const Home: NextPage = () => {
         transactionId &&
         confirm("Are you sure you want to delete this transaction?")
       )
-        deleteTransaction(transactionId);
+        deleteTransaction(transactionId).then(refreshTransactions);
     };
 
   return (
