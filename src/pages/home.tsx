@@ -7,7 +7,7 @@ import { getTransactions } from "../requests/transaction.requests";
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/formatters";
 import type { TransactionMonth } from "../types/transaction.types";
-import { List } from "../components/library";
+import { Animated, List } from "../components/library";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -80,13 +80,21 @@ const Home: NextPage = () => {
                 >
                   <div className="w-full flex justify-between">
                     <div>{transaction.description}</div>
-                    <div>
+                    <div
+                      className={
+                        transaction.transaction_type === "EXPENSE"
+                          ? "text-black"
+                          : "text-emerald-500"
+                      }
+                    >
                       {transaction.transaction_type === "EXPENSE" ? "-" : "+"}
                       {formatAsCurrency(transaction.amount)}
                     </div>
                   </div>
-                  {selectedTransactionId === transaction.id && (
-                    <>
+                  <Animated.Collapsible
+                    open={selectedTransactionId === transaction.id}
+                  >
+                    <div className="pointer-events-none"
                       <hr />
                       <div className="pl-3">
                         Edit
@@ -99,8 +107,8 @@ const Home: NextPage = () => {
                         <br />
                         Posted: {transaction.posted_at.substring(0, 10)}
                       </div>
-                    </>
-                  )}
+                    </div>
+                  </Animated.Collapsible>
                 </List.Item>
               ))}
             </>
