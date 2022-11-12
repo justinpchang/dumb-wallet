@@ -94,7 +94,7 @@ const Home: NextPage = () => {
                   <Animated.Collapsible
                     open={selectedTransactionId === transaction.id}
                   >
-                    <div className="pointer-events-none"
+                    <div className="pointer-events-none">
                       <hr />
                       <div className="pl-3">
                         Edit
