@@ -7,7 +7,7 @@ import { getTransactions } from "../requests/transaction.requests";
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/formatters";
 import type { TransactionMonth } from "../types/transaction.types";
-import Link from "next/link";
+import { List } from "../components/library";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -49,24 +49,15 @@ const Home: NextPage = () => {
         Add Transaction
       </button>
       {groupedTransactions.map((month) => (
-        <div
-          className="mb-6 bg-slate-200 drop-shadow-sm w-80"
-          key={`transaction-month-${month.label}`}
-        >
-          <div className="text-lg font-normal mx-3 mt-2 mb-3">
-            {month.label}
-          </div>
+        <List.Container key={`tm-${month.label}`}>
+          <List.Header>{month.label}</List.Header>
           {month.days.map((day) => (
             <>
-              <div
-                key={`transaction-month-${month.label}-day-${day.label}`}
-                className="mx-4 text-xs"
-              >
+              <List.Subheader key={`tmd-${month.label}-${day.label}`}>
                 {day.label}
-              </div>
+              </List.Subheader>
               {day.transactions.map((transaction) => (
-                <div
-                  className="bg-white text-sm p-2 m-2 drop-shadow flex flex-col"
+                <List.Item
                   id={`transaction-${transaction.id}`}
                   key={`transaction-${transaction.id}`}
                   onClick={(ev: React.MouseEvent) => {
@@ -110,11 +101,11 @@ const Home: NextPage = () => {
                       </div>
                     </>
                   )}
-                </div>
+                </List.Item>
               ))}
             </>
           ))}
-        </div>
+        </List.Container>
       ))}
     </>
   );
