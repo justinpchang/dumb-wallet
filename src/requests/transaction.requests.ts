@@ -9,6 +9,7 @@ export const getTransactions = async (): Promise<Transaction[]> => {
     .from("transactions")
     .select("id, transaction_type, amount, description, notes, posted_at")
     .eq("user_id", user.id)
+    .is("deleted_at", null)
     .order("posted_at", { ascending: false });
 
   if (error && status !== 406) throw error;
@@ -59,6 +60,19 @@ export const updateTransaction = async (
       amount: transaction.amount,
       description: transaction.description,
       notes: transaction.notes,
+    })
+    .eq("id", id);
+
+  if (error && status !== 406) throw error;
+};
+
+export const deleteTransaction = async (id: string) => {
+  checkUser();
+
+  let { error, status } = await supabase
+    .from("transactions")
+    .update({
+      deleted_at: new Date().toISOString(),
     })
     .eq("id", id);
 

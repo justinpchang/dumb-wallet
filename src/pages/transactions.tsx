@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import type { NextPage } from "next";
 
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "../components/library";
-import Link from "next/link";
+import { deleteTransaction } from "../requests/transaction.requests";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -39,6 +40,16 @@ const Home: NextPage = () => {
     (transactionId: string | undefined) => (ev: React.MouseEvent) => {
       ev.preventDefault();
       console.log("editing " + transactionId);
+    };
+
+  const handleDeleteButtonClick =
+    (transactionId: string | undefined) => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      if (
+        transactionId &&
+        confirm("Are you sure you want to delete this transaction?")
+      )
+        deleteTransaction(transactionId);
     };
 
   return (
@@ -97,7 +108,7 @@ const Home: NextPage = () => {
                         <br />
                         <Button
                           theme="ghost"
-                          onClick={handleEditButtonClick(transaction.id)}
+                          onClick={handleDeleteButtonClick(transaction.id)}
                         >
                           Delete
                         </Button>
