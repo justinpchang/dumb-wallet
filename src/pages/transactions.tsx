@@ -35,12 +35,22 @@ const Home: NextPage = () => {
     }
   };
 
+  const handleEditButtonClick =
+    (transactionId: string | undefined) => (ev: React.MouseEvent) => {
+      ev.preventDefault();
+      console.log("editing " + transactionId);
+    };
+
   return (
     <>
       <div className="flex mb-6 gap-3">
-        <Button onClick={() => refreshTransactions()}>Refresh</Button>
+        <Button theme="primary" onClick={() => refreshTransactions()}>
+          Refresh
+        </Button>
         <Link href="/transactions/add">
-          <Button onClick={() => {}}>Add Transaction</Button>
+          <Button theme="primary" onClick={() => {}}>
+            Add Transaction
+          </Button>
         </Link>
       </div>
       {groupedTransactions.map((month) => (
@@ -75,16 +85,28 @@ const Home: NextPage = () => {
                   <Animated.Collapsible
                     open={selectedTransactionId === transaction.id}
                   >
-                    <div className="pointer-events-none">
+                    <div className="pt-1">
                       <hr />
                       <div className="pl-3">
-                        Edit
+                        <Button
+                          theme="ghost"
+                          onClick={handleEditButtonClick(transaction.id)}
+                        >
+                          Edit
+                        </Button>
                         <br />
-                        Delete
+                        <Button
+                          theme="ghost"
+                          onClick={handleEditButtonClick(transaction.id)}
+                        >
+                          Delete
+                        </Button>
                       </div>
                       <hr />
                       <div className="pl-3">
-                        Description: {transaction.notes}
+                        Description: {transaction.description}
+                        <br />
+                        Notes: {transaction.notes}
                         <br />
                         Posted: {transaction.posted_at.substring(0, 10)}
                       </div>
