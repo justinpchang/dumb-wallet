@@ -14,6 +14,26 @@ const Home: NextPage = () => {
     refreshTransactions();
   }, [refreshTransactions]);
 
+  const handleListItemClick =
+    (transactionId: string | undefined) => (ev: React.MouseEvent) => {
+      if (
+        ev.type === "click" &&
+        window.getSelection()?.toString()?.length === 0
+      ) {
+        setSelectedTransactionId(
+          selectedTransactionId === transactionId ? undefined : transactionId
+        );
+      }
+    };
+
+  const handleListItemBlur = (ev: React.FocusEvent) => {
+    if (ev.target.id.startsWith("transaction")) {
+      setSelectedTransactionId(ev.target.id.split("-")[1]);
+    } else {
+      setSelectedTransactionId(undefined);
+    }
+  };
+
   return (
     <>
       <div className="flex mb-6 gap-3">
@@ -32,22 +52,8 @@ const Home: NextPage = () => {
                 <List.Item
                   id={`transaction-${transaction.id}`}
                   key={`transaction-${transaction.id}`}
-                  onClick={(ev: React.MouseEvent) => {
-                    if (ev.type === "click") {
-                      setSelectedTransactionId(
-                        selectedTransactionId === transaction.id
-                          ? undefined
-                          : transaction.id
-                      );
-                    }
-                  }}
-                  onBlur={(ev: React.FocusEvent) => {
-                    if (ev.target.id.startsWith("transaction")) {
-                      setSelectedTransactionId(ev.target.id.split("-")[1]);
-                    } else {
-                      setSelectedTransactionId(undefined);
-                    }
-                  }}
+                  onClick={handleListItemClick(transaction.id)}
+                  onBlur={handleListItemBlur}
                   tabIndex={0}
                 >
                   <div className="w-full flex justify-between">
