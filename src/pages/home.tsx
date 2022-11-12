@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import { format } from "date-fns";
@@ -7,8 +7,12 @@ import { getTransactions } from "../requests/transaction.requests";
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/formatters";
 import type { TransactionMonth } from "../types/transaction.types";
+import Link from "next/link";
 
 const Home: NextPage = () => {
+  const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
+  const [contextTransactionId, setContextTransactionId] = useState<string>();
+
   const { transactions, setTransactions } = useStore();
 
   useEffect(() => {
@@ -42,6 +46,12 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Link
+        className="px-3 py-2 mb-6 bg-amber-50 border shadow hover:bg-amber-100 active:shadow-inner"
+        href="/transactions/add"
+      >
+        Add Transaction
+      </Link>
       {groupedTransactions.map((month) => (
         <div
           className="mb-6 bg-slate-200 drop-shadow-sm w-80"
@@ -60,14 +70,62 @@ const Home: NextPage = () => {
               </div>
               {day.transactions.map((transaction) => (
                 <div
-                  className="bg-white text-sm p-2 m-2 drop-shadow flex justify-between"
+                  className="bg-white text-sm p-2 m-2 drop-shadow flex flex-col"
+                  id={`transaction-${transaction.id}`}
                   key={`transaction-${transaction.id}`}
+                  onClick={() => {
+                    if (selectedTransactionId === transaction.id) {
+                      setSelectedTransactionId(undefined);
+                      setContextTransactionId(undefined);
+                    } else {
+                      setSelectedTransactionId(transaction.id);
+                    }
+                  }}
+                  onContextMenu={(ev: React.MouseEvent) => {
+                    ev.preventDefault();
+                    setContextTransactionId(
+                      contextTransactionId === transaction.id
+                        ? undefined
+                        : transaction.id
+                    );
+                  }}
+                  onBlur={(ev: React.FocusEvent) => {
+                    if (ev.target.id.startsWith("transaction")) {
+                      setSelectedTransactionId(ev.target.id.split("-")[1]);
+                    } else {
+                      setSelectedTransactionId(undefined);
+                    }
+                    setContextTransactionId(undefined);
+                  }}
+                  tabIndex={0}
                 >
-                  <div>{transaction.description}</div>
-                  <div>
-                    {transaction.transaction_type === "EXPENSE" ? "-" : "+"}
-                    {formatAsCurrency(transaction.amount)}
+                  <div className="w-full flex justify-between">
+                    <div>{transaction.description}</div>
+                    <div>
+                      {transaction.transaction_type === "EXPENSE" ? "-" : "+"}
+                      {formatAsCurrency(transaction.amount)}
+                    </div>
                   </div>
+                  {contextTransactionId === transaction.id && (
+                    <>
+                      <hr />
+                      <div className="pl-3">
+                        Edit
+                        <br />
+                        Delete
+                      </div>
+                    </>
+                  )}
+                  {selectedTransactionId === transaction.id && (
+                    <>
+                      <hr />
+                      <div className="pl-3">
+                        Description: {transaction.notes}
+                        <br />
+                        Posted: {transaction.posted_at.substring(0, 10)}
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </>

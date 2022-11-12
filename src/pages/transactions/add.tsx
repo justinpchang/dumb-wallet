@@ -23,7 +23,7 @@ const AddTransaction: NextPage = () => {
         description,
         notes,
       });
-      router.push("/transactions");
+      router.push("/home");
     } catch (e: any) {
       alert(e.message);
     } finally {
