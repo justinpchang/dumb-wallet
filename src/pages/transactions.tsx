@@ -1,65 +1,103 @@
-import { format } from "date-fns";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import Link from "next/link";
-import { useEffect } from "react";
-import { getTransactions } from "../requests/transaction.requests";
-import useStore from "../store/useStore";
-import type { Transaction } from "../types/transaction.types";
 
-const Transactions: NextPage = () => {
-  const { transactions, setTransactions } = useStore();
+import useStore from "../store/useStore";
+import { formatAsCurrency } from "../utils/formatters";
+import { Animated, Button, List } from "../components/library";
+import Link from "next/link";
+
+const Home: NextPage = () => {
+  const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
+
+  const { groupedTransactions, refreshTransactions } = useStore();
 
   useEffect(() => {
-    getTransactions().then((transactions) => setTransactions(transactions));
-  }, [setTransactions]);
+    refreshTransactions();
+  }, [refreshTransactions]);
 
-  const transactionsByMonth = new Map<string, Transaction[]>();
-  transactions.forEach((transaction: Transaction) => {
-    const month = format(new Date(transaction.posted_at), "MMMM yyyy");
-    transactionsByMonth.set(month, [
-      ...(transactionsByMonth.get(month) || []),
-      transaction,
-    ]);
-  });
+  const handleListItemClick =
+    (transactionId: string | undefined) => (ev: React.MouseEvent) => {
+      if (
+        ev.type === "click" &&
+        window.getSelection()?.toString()?.length === 0
+      ) {
+        setSelectedTransactionId(
+          selectedTransactionId === transactionId ? undefined : transactionId
+        );
+      }
+    };
+
+  const handleListItemBlur = (ev: React.FocusEvent) => {
+    if (ev.target.id.startsWith("transaction")) {
+      setSelectedTransactionId(ev.target.id.split("-")[1]);
+    } else {
+      setSelectedTransactionId(undefined);
+    }
+  };
 
   return (
     <>
-      <h1 className="text-3xl">Transactions</h1>
-      <div className="py-4" />
-      <Link href="/">Go to Profile</Link>
-      <div className="py-4" />
-      <Link href="/transactions/add">Add new transaction</Link>
-      <div className="py-4" />
-      {Array.from(transactionsByMonth.keys()).map((month) => (
-        <>
-          <h1 className="text-xl" key={month + "header"}>
-            {month}
-          </h1>
-          <ul className="" key={month + "list"}>
-            {transactions.map((transaction: Transaction) => (
-              <li key={transaction.id}>
-                <Link href={`/transactions/${transaction.id}`}>
-                  <a>
-                    {transaction.transaction_type === "EXPENSE" ? "-" : "+"}$
-                    {transaction.amount} - {transaction.description} (
-                    {format(new Date(transaction.posted_at), "MM/dd/yyyy")})
-                  </a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </>
+      <div className="flex mb-6 gap-3">
+        <Button onClick={() => refreshTransactions()}>Refresh</Button>
+        <Link href="/transactions/add">
+          <Button onClick={() => {}}>Add Transaction</Button>
+        </Link>
+      </div>
+      {groupedTransactions.map((month) => (
+        <List.Container key={`tm-${month.label}`}>
+          <List.Header>{month.label}</List.Header>
+          {month.days.map((day) => (
+            <>
+              <List.Subheader key={`tmd-${month.label}-${day.label}`}>
+                {day.label}
+              </List.Subheader>
+              {day.transactions.map((transaction) => (
+                <List.Item
+                  id={`transaction-${transaction.id}`}
+                  key={`transaction-${transaction.id}`}
+                  onClick={handleListItemClick(transaction.id)}
+                  onBlur={handleListItemBlur}
+                  tabIndex={0}
+                >
+                  <div className="w-full flex justify-between">
+                    <div>{transaction.description}</div>
+                    <div
+                      className={
+                        transaction.transaction_type === "EXPENSE"
+                          ? "text-black"
+                          : "text-emerald-500"
+                      }
+                    >
+                      {transaction.transaction_type === "EXPENSE" ? "-" : "+"}
+                      {formatAsCurrency(transaction.amount)}
+                    </div>
+                  </div>
+                  <Animated.Collapsible
+                    open={selectedTransactionId === transaction.id}
+                  >
+                    <div className="pointer-events-none">
+                      <hr />
+                      <div className="pl-3">
+                        Edit
+                        <br />
+                        Delete
+                      </div>
+                      <hr />
+                      <div className="pl-3">
+                        Description: {transaction.notes}
+                        <br />
+                        Posted: {transaction.posted_at.substring(0, 10)}
+                      </div>
+                    </div>
+                  </Animated.Collapsible>
+                </List.Item>
+              ))}
+            </>
+          ))}
+        </List.Container>
       ))}
     </>
   );
 };
 
-export default Transactions;
-
-export async function getServerSideProps() {
-  return {
-    props: {
-      test: "Test",
-    },
-  };
-}
+export default Home;
