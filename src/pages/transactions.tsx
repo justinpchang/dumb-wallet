@@ -103,7 +103,7 @@ const Home: NextPage = () => {
                         </Button>
                       </div>
                       <hr />
-                      <div className="pl-3">
+                      <div className="pl-3 cursor-default">
                         Description: {transaction.description}
                         <br />
                         Notes: {transaction.notes}

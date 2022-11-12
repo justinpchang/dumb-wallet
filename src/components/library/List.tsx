@@ -19,7 +19,7 @@ const Subheader = ({ children }: Props) => (
 
 const Item = ({ children, ...props }: Props) => (
   <div
-    className="flex flex-col m-2 p-2 bg-white text-sm drop-shadow"
+    className="flex flex-col m-2 p-2 bg-white text-sm drop-shadow cursor-pointer"
     {...props}
   >
     {children}
