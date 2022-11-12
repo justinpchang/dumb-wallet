@@ -1,53 +1,32 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 
-import { format } from "date-fns";
-
-import { getTransactions } from "../requests/transaction.requests";
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/formatters";
-import type { TransactionMonth } from "../types/transaction.types";
 import { Animated, List } from "../components/library";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
 
-  const { transactions, setTransactions } = useStore();
+  const { groupedTransactions, refreshTransactions } = useStore();
 
   useEffect(() => {
-    getTransactions().then((transactions) => setTransactions(transactions));
-  }, [setTransactions]);
-
-  const groupedTransactions: TransactionMonth[] = useMemo(() => {
-    const uniqueYearMonthDays = Array.from(
-      new Set(
-        transactions.map((transaction) =>
-          transaction.posted_at.substring(0, 10)
-        )
-      )
-    );
-    return Array.from(
-      new Set(
-        transactions.map((transaction) => transaction.posted_at.substring(0, 7))
-      )
-    ).map((yearMonth) => ({
-      label: format(new Date(yearMonth), "MMMM yyyy"),
-      days: uniqueYearMonthDays
-        .filter((yearMonthDay) => yearMonthDay.startsWith(yearMonth))
-        .map((yearMonthDay) => ({
-          label: format(new Date(yearMonthDay), "eeee 'the' do"),
-          transactions: transactions.filter((transaction) =>
-            transaction.posted_at.startsWith(yearMonthDay)
-          ),
-        })),
-    }));
-  }, [transactions]);
+    refreshTransactions();
+  }, [refreshTransactions]);
 
   return (
     <>
-      <button className="px-3 py-2 mb-6 bg-amber-50 border shadow hover:bg-amber-100 active:shadow-inner">
-        Add Transaction
-      </button>
+      <div className="flex mb-6 gap-3">
+        <button
+          onClick={() => refreshTransactions()}
+          className="px-3 py-2 bg-white border shadow hover:bg-slate-100 active:shadow-inner"
+        >
+          Refresh
+        </button>
+        <button className="px-3 py-2 bg-white border shadow hover:bg-slate-100 active:shadow-inner">
+          Add Transaction
+        </button>
+      </div>
       {groupedTransactions.map((month) => (
         <List.Container key={`tm-${month.label}`}>
           <List.Header>{month.label}</List.Header>
