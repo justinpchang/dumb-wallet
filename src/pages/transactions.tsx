@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 
 import useStore from "../store/useStore";
-import { formatAsCurrency } from "../utils/formatters";
+import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "../components/library";
 import Link from "next/link";
 

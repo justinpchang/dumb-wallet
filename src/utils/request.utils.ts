@@ -1,4 +1,4 @@
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "./supabase.utils";
 
 export const checkUser = () => {
   const user = supabase.auth.user();

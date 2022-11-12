@@ -2,7 +2,7 @@ import type { StateCreator } from "zustand";
 
 import { State } from "./useStore";
 import type { Transaction, TransactionMonth } from "../types/transaction.types";
-import { groupTransactionsByYearMonthDay } from "../utils/transactions.utils";
+import { groupTransactionsByYearMonthDay } from "../utils/transaction.utils";
 import { getTransactions } from "../requests/transaction.requests";
 
 export interface TransactionSlice {

@@ -1,6 +1,6 @@
 import type { Transaction } from "../types/transaction.types";
-import { supabase } from "../utils/supabaseClient";
-import { checkUser } from "../utils/requests";
+import { supabase } from "../utils/supabase.utils";
+import { checkUser } from "../utils/request.utils";
 
 export const getTransactions = async (): Promise<Transaction[]> => {
   const user = checkUser();

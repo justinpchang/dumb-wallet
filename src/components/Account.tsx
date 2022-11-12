@@ -6,7 +6,7 @@ import {
 } from "../requests/user.requests";
 import { User } from "../types/user.types";
 import useStore from "../store/useStore";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../utils/supabase.utils";
 
 export default function Account() {
   const { session } = useStore();
