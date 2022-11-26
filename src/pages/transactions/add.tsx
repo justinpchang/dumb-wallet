@@ -14,8 +14,8 @@ const AddTransaction: NextPage = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState<string>("");
   const [type, setType] = useState<TransactionType>("EXPENSE");
+  const [amount, setAmount] = useState<string>("");
   const [postedAt, setPostedAt] = useState(new Date());
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
@@ -24,8 +24,8 @@ const AddTransaction: NextPage = () => {
     setIsLoading(true);
     try {
       await createTransaction({
-        amount: parseFloat(amount),
         transaction_type: type,
+        amount: parseFloat(amount),
         posted_at: postedAt,
         description,
         notes,
@@ -51,18 +51,6 @@ const AddTransaction: NextPage = () => {
           <List.Header>Add transaction</List.Header>
           <List.Item>
             <div className="w-full h-full">
-              <div className="absolute">Amount</div>
-              <input
-                type="text"
-                placeholder="$123.45"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="w-full h-full text-right outline-none"
-              />
-            </div>
-          </List.Item>
-          <List.Item>
-            <div className="w-full h-full">
               <div className="absolute">Type</div>
               <select
                 className="bg-white float-right"
@@ -71,6 +59,18 @@ const AddTransaction: NextPage = () => {
                 <option value="EXPENSE">Expense</option>
                 <option value="INCOME">Income</option>
               </select>
+            </div>
+          </List.Item>
+          <List.Item>
+            <div className="w-full h-full">
+              <div className="absolute">Amount</div>
+              <input
+                type="text"
+                placeholder="$123.45"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full h-full text-right outline-none"
+              />
             </div>
           </List.Item>
           <List.Item>
