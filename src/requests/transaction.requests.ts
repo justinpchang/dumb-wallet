@@ -37,8 +37,9 @@ export const createTransaction = async (transaction: Transaction) => {
   let { error, status } = await supabase.from("transactions").insert([
     {
       user_id: user.id,
-      transaction_type: transaction.transaction_type,
       amount: transaction.amount,
+      transaction_type: transaction.transaction_type,
+      posted_at: transaction.posted_at,
       description: transaction.description,
       notes: transaction.notes,
     },

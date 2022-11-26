@@ -1,16 +1,22 @@
+import { useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { createTransaction } from "../../requests/transaction.requests";
 import { TransactionType } from "../../types/transaction.types";
+import { Button, List } from "../../components/library";
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [type, setType] = useState<TransactionType>("EXPENSE");
   const [amount, setAmount] = useState<string>("");
+  const [type, setType] = useState<TransactionType>("EXPENSE");
+  const [postedAt, setPostedAt] = useState(new Date());
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -18,8 +24,9 @@ const AddTransaction: NextPage = () => {
     setIsLoading(true);
     try {
       await createTransaction({
-        transaction_type: type,
         amount: parseFloat(amount),
+        transaction_type: type,
+        posted_at: postedAt,
         description,
         notes,
       });
@@ -33,60 +40,86 @@ const AddTransaction: NextPage = () => {
 
   return (
     <>
-      <h1 className="text-3xl">Add Transaction</h1>
-      <div className="py-4" />
-      <Link href="/transactions">Go back</Link>
-      <div className="py-4" />
       <form
-        className="flex flex-col justify-center items-center"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
+        className="flex flex-col"
       >
-        <select
-          className="bg-gray-400"
-          onChange={(e) => setType(e.target.value as TransactionType)}
-        >
-          <option value="EXPENSE">Expense</option>
-          <option value="INCOME">Income</option>
-        </select>
-        <label>
-          Amount
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </label>
-        <label>
-          Description
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <label>
-          Notes
-          <input
-            type="textarea"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={
-            isLoading ||
-            !amount ||
-            isNaN(parseFloat(amount)) ||
-            !type ||
-            !description
-          }
-        >
-          {isLoading ? "Loading" : "Add Transaction"}
-        </button>
+        <List.Container>
+          <List.Header>Add transaction</List.Header>
+          <List.Item>
+            <div className="w-full h-full">
+              <div className="absolute">Amount</div>
+              <input
+                type="text"
+                placeholder="$123.45"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full h-full text-right outline-none"
+              />
+            </div>
+          </List.Item>
+          <List.Item>
+            <div className="w-full h-full">
+              <div className="absolute">Type</div>
+              <select
+                className="bg-white float-right"
+                onChange={(e) => setType(e.target.value as TransactionType)}
+              >
+                <option value="EXPENSE">Expense</option>
+                <option value="INCOME">Income</option>
+              </select>
+            </div>
+          </List.Item>
+          <List.Item>
+            <div className="w-full h-full">
+              <div className="absolute z-10">Date</div>
+              <DatePicker
+                selected={postedAt}
+                onChange={setPostedAt}
+                className="w-full text-right outline-none"
+              />
+            </div>
+          </List.Item>
+          <List.Item>
+            <input
+              type="text"
+              placeholder="Add a description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full h-full outline-none"
+            />
+          </List.Item>
+          <List.Item>
+            <textarea
+              placeholder="Add a note"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full h-full outline-none"
+            />
+          </List.Item>
+        </List.Container>
+        <div className="flex flex-col gap-3">
+          <Button
+            theme="primary"
+            type="submit"
+            disabled={
+              isLoading ||
+              !type ||
+              !amount ||
+              isNaN(parseFloat(amount)) ||
+              !postedAt ||
+              !description
+            }
+          >
+            {isLoading ? "Loading" : "Add Transaction"}
+          </Button>
+          <Link href="/transactions">
+            <Button theme="primary">Go back</Button>
+          </Link>
+        </div>
       </form>
     </>
   );

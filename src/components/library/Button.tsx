@@ -4,8 +4,9 @@ type Theme = "primary" | "ghost";
 
 interface Props {
   theme: Theme;
-  onClick: (ev: React.MouseEvent) => any;
+  onClick?: (ev: React.MouseEvent) => any;
   children: React.ReactNode;
+  [other: string]: any;
 }
 
 const THEMES: { primary: string; ghost: string } = {
@@ -14,8 +15,8 @@ const THEMES: { primary: string; ghost: string } = {
   ghost: "",
 };
 
-const Button = ({ theme, onClick, children }: Props) => (
-  <button onClick={onClick} className={THEMES[theme]}>
+const Button = ({ theme, onClick, children, ...props }: Props) => (
+  <button onClick={onClick} className={THEMES[theme]} {...props}>
     {children}
   </button>
 );

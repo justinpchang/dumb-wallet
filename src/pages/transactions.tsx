@@ -59,9 +59,7 @@ const Home: NextPage = () => {
           Refresh
         </Button>
         <Link href="/transactions/add">
-          <Button theme="primary" onClick={() => {}}>
-            Add Transaction
-          </Button>
+          <Button theme="primary">Add Transaction</Button>
         </Link>
       </div>
       {groupedTransactions.map((month) => (
