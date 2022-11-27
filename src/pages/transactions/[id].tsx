@@ -59,7 +59,9 @@ const EditTransaction: NextPage = () => {
         handleSubmit={handleSubmit}
       />
       <Link href="/transactions">
-        <Button theme="primary">Go back</Button>
+        <a>
+          <Button theme="primary">Go back</Button>
+        </a>
       </Link>
     </>
   );
