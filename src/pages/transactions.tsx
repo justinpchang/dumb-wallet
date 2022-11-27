@@ -8,7 +8,7 @@ import { Animated, Button, List } from "../components/library";
 import { deleteTransaction } from "../requests/transaction.requests";
 import { useRouter } from "next/router";
 
-const Home: NextPage = () => {
+const Transactions: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
 
   const { groupedTransactions, refreshTransactions } = useStore();
@@ -61,14 +61,18 @@ const Home: NextPage = () => {
           Refresh
         </Button>
         <Link href="/transactions/add">
-          <Button theme="primary">Add Transaction</Button>
+          <a>
+            <Button theme="primary">Add Transaction</Button>
+          </a>
         </Link>
       </div>
       {groupedTransactions.map((month) => (
         <List.Container key={`tm-${month.label}`}>
-          <List.Header>{month.label}</List.Header>
+          <List.Header key={`tm-header-${month.label}`}>
+            {month.label}
+          </List.Header>
           {month.days.map((day) => (
-            <>
+            <div key={`tmd-cont-${month.label}-${day.label}`}>
               <List.Subheader key={`tmd-${month.label}-${day.label}`}>
                 {day.label}
               </List.Subheader>
@@ -126,7 +130,7 @@ const Home: NextPage = () => {
                   </Animated.Collapsible>
                 </List.Item>
               ))}
-            </>
+            </div>
           ))}
         </List.Container>
       ))}
@@ -134,4 +138,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Transactions;
