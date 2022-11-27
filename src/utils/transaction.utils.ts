@@ -2,6 +2,14 @@ import { format } from "date-fns";
 
 import type { Transaction } from "../types/transaction.types";
 
+export const createEmptyTransaction = (): Transaction => ({
+  transaction_type: "EXPENSE",
+  amount: "",
+  posted_at: new Date(),
+  description: "",
+  notes: "",
+});
+
 export const groupTransactionsByYearMonthDay = (
   transactions: Transaction[]
 ) => {
