@@ -14,7 +14,14 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 
   if (error && status !== 406) throw error;
 
-  return data as Transaction[];
+  if (!data) return [];
+
+  const transactions: Transaction[] = data.map((transaction) => {
+    transaction.posted_at = new Date(transaction.posted_at);
+    return transaction;
+  });
+
+  return transactions;
 };
 
 export const getTransaction = async (id: string): Promise<Transaction> => {
@@ -27,6 +34,8 @@ export const getTransaction = async (id: string): Promise<Transaction> => {
     .single();
 
   if (error && status !== 406) throw error;
+
+  data.posted_at = new Date(data.posted_at);
 
   return data as Transaction;
 };
@@ -74,7 +83,7 @@ export const deleteTransaction = async (id: string) => {
   let { error, status } = await supabase
     .from("transactions")
     .update({
-      deleted_at: new Date().toISOString(),
+      deleted_at: new Date(),
     })
     .eq("id", id);
 

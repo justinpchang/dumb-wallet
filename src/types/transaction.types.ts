@@ -7,7 +7,7 @@ export type Transaction = {
   amount: string;
   description: string;
   notes: string;
-  posted_at?: any; // datetime
+  posted_at: Date;
   // TODO category
 };
 
