@@ -59,6 +59,7 @@ export const updateTransaction = async (
     .update({
       transaction_type: transaction.transaction_type,
       amount: transaction.amount,
+      posted_at: transaction.posted_at,
       description: transaction.description,
       notes: transaction.notes,
     })

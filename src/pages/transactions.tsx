@@ -6,11 +6,13 @@ import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "../components/library";
 import { deleteTransaction } from "../requests/transaction.requests";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
 
   const { groupedTransactions, refreshTransactions } = useStore();
+  const router = useRouter();
 
   useEffect(() => {
     refreshTransactions();
@@ -39,7 +41,7 @@ const Home: NextPage = () => {
   const handleEditButtonClick =
     (transactionId: string | undefined) => (ev: React.MouseEvent) => {
       ev.preventDefault();
-      console.log("editing " + transactionId);
+      router.push(`/transactions/${transactionId}`);
     };
 
   const handleDeleteButtonClick =
@@ -88,7 +90,7 @@ const Home: NextPage = () => {
                       }
                     >
                       {transaction.transaction_type === "EXPENSE" ? "-" : "+"}
-                      {formatAsCurrency(transaction.amount)}
+                      {formatAsCurrency(parseFloat(transaction.amount))}
                     </div>
                   </div>
                   <Animated.Collapsible
@@ -117,7 +119,8 @@ const Home: NextPage = () => {
                         <br />
                         Notes: {transaction.notes}
                         <br />
-                        Posted: {transaction.posted_at.substring(0, 10)}
+                        Posted:{" "}
+                        {transaction.posted_at.toString().substring(0, 10)}
                       </div>
                     </div>
                   </Animated.Collapsible>
