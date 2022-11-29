@@ -16,7 +16,7 @@ const AddTransaction: NextPage = () => {
   const handleSubmit = async () => {
     try {
       await createTransaction(transaction);
-      router.push("/transactions");
+      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -29,7 +29,7 @@ const AddTransaction: NextPage = () => {
         setTransaction={setTransaction}
         handleSubmit={handleSubmit}
       />
-      <Link href="/transactions">
+      <Link href="/">
         <a>
           <Button theme="primary">Go back</Button>
         </a>

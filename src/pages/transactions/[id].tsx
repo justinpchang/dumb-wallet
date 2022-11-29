@@ -29,7 +29,7 @@ const EditTransaction: NextPage = () => {
         await getTransactions();
       }
       if (!_transaction) {
-        router.push("/transactions");
+        router.push("/");
         return;
       }
       _transaction.posted_at = new Date(_transaction.posted_at);
@@ -44,7 +44,7 @@ const EditTransaction: NextPage = () => {
   const handleSubmit = async () => {
     try {
       await updateTransaction(id as string, transaction);
-      router.push("/transactions");
+      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -58,7 +58,7 @@ const EditTransaction: NextPage = () => {
         setTransaction={setTransaction}
         handleSubmit={handleSubmit}
       />
-      <Link href="/transactions">
+      <Link href="/">
         <a>
           <Button theme="primary">Go back</Button>
         </a>

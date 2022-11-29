@@ -5,7 +5,7 @@ import { supabase } from "../utils/supabase.utils";
 import useStore from "../store/useStore";
 
 import Auth from "../components/Auth";
-import Transactions from "../components/transactions";
+import Transactions from "../components/Transactions";
 
 const Home: NextPage = () => {
   const { session, setSession } = useStore();
