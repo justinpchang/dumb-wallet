@@ -54,11 +54,6 @@ const Transactions = () => {
 
   return (
     <>
-      <div className="flex mb-6 gap-3">
-        <Button theme="primary" onClick={() => refreshTransactions()}>
-          Refresh
-        </Button>
-      </div>
       {groupedTransactions.map((month) => (
         <List.Container key={`tm-${month.label}`}>
           <List.Header key={`tm-header-${month.label}`}>
