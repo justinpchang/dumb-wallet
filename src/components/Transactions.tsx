@@ -6,6 +6,7 @@ import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "./library";
 import { deleteTransaction } from "../requests/transaction.requests";
 import { useRouter } from "next/router";
+import { format } from "date-fns";
 
 const Transactions = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -83,8 +84,13 @@ const Transactions = () => {
                   onBlur={handleListItemBlur}
                   tabIndex={0}
                 >
-                  <div className="w-full flex justify-between">
-                    <div>{transaction.description}</div>
+                  <div className="w-full flex justify-between items-center">
+                    <div>
+                      <div>{transaction.description}</div>
+                      <div className="text-xs leading-3 text-gray-400">
+                        {/* TODO: category */}
+                      </div>
+                    </div>
                     <div
                       className={
                         transaction.transaction_type === "EXPENSE"
