@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "./library";
 import { deleteTransaction } from "../requests/transaction.requests";
 import { useRouter } from "next/router";
-import { format } from "date-fns";
 
 const Transactions = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
@@ -60,11 +58,6 @@ const Transactions = () => {
         <Button theme="primary" onClick={() => refreshTransactions()}>
           Refresh
         </Button>
-        <Link href="/transactions/add">
-          <a>
-            <Button theme="primary">Add Transaction</Button>
-          </a>
-        </Link>
       </div>
       {groupedTransactions.map((month) => (
         <List.Container key={`tm-${month.label}`}>
