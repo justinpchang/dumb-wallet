@@ -5,7 +5,7 @@ import { supabase } from "../utils/supabase.utils";
 import useStore from "../store/useStore";
 
 import Auth from "../components/Auth";
-import Account from "../components/Account";
+import Transactions from "../components/transactions";
 
 const Home: NextPage = () => {
   const { session, setSession } = useStore();
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
     });
   }, [setSession]);
 
-  return !session ? <Auth /> : <Account />;
+  return !session ? <Auth /> : <Transactions />;
 };
 
 export default Home;

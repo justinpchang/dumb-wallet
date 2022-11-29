@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import type { NextPage } from "next";
 
 import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/format.utils";
-import { Animated, Button, List } from "../components/library";
+import { Animated, Button, List } from "./library";
 import { deleteTransaction } from "../requests/transaction.requests";
 import { useRouter } from "next/router";
 
-const Transactions: NextPage = () => {
+const Transactions = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
 
   const { groupedTransactions, refreshTransactions } = useStore();
