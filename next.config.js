@@ -8,4 +8,5 @@ const withPWA = require("next-pwa")({
   dest: "public",
 });
 
-module.exports = withPWA(nextConfig);
+module.exports =
+  process.env.ENVIRONMENT === "dev" ? nextConfig : withPWA(nextConfig);
