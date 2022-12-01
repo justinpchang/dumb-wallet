@@ -11,7 +11,12 @@ const Home: NextPage = () => {
   const { session, setSession } = useStore();
 
   useEffect(() => {
-    setSession(supabase.auth.session());
+    (async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setSession(session);
+    })();
 
     supabase.auth.onAuthStateChange((_, session) => {
       setSession(session);

@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabase.utils";
 import { checkUser } from "../utils/request.utils";
 
 export const getTransactions = async (): Promise<Transaction[]> => {
-  const user = checkUser();
+  const user = await checkUser();
 
   let { data, error, status } = await supabase
     .from("transactions")
@@ -25,7 +25,7 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 };
 
 export const getTransaction = async (id: string): Promise<Transaction> => {
-  checkUser();
+  await checkUser();
 
   let { data, error, status } = await supabase
     .from("transactions")
@@ -35,13 +35,13 @@ export const getTransaction = async (id: string): Promise<Transaction> => {
 
   if (error && status !== 406) throw error;
 
-  data.posted_at = new Date(data.posted_at);
+  data!.posted_at = new Date(data!.posted_at);
 
   return data as Transaction;
 };
 
 export const createTransaction = async (transaction: Transaction) => {
-  const user = checkUser();
+  const user = await checkUser();
 
   let { error, status } = await supabase.from("transactions").insert([
     {
@@ -61,7 +61,7 @@ export const updateTransaction = async (
   id: string,
   transaction: Transaction
 ) => {
-  checkUser();
+  await checkUser();
 
   let { error, status } = await supabase
     .from("transactions")
@@ -78,7 +78,7 @@ export const updateTransaction = async (
 };
 
 export const deleteTransaction = async (id: string) => {
-  checkUser();
+  await checkUser();
 
   let { error, status } = await supabase
     .from("transactions")

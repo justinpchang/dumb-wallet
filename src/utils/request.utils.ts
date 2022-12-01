@@ -1,7 +1,10 @@
 import { supabase } from "./supabase.utils";
 
-export const checkUser = () => {
-  const user = supabase.auth.user();
+export const checkUser = async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const { user } = session!;
 
   if (!user) throw "Please log in.";
 
