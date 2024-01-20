@@ -14,17 +14,13 @@ module.exports = {
       "4xl": "3.158rem",
       "5xl": "4.210rem",
     },
-    fontFamily: {
-      heading: "Poppins",
-      body: "Poppins",
-    },
-    fontWeight: {
-      normal: "400",
-      bold: "700",
-    },
     extend: {
       transitionProperty: {
         height: "height",
+      },
+      fontFamily: {
+        heading: "Poppins",
+        body: "Poppins",
       },
       colors: {
         text: {
@@ -40,19 +36,7 @@ module.exports = {
           900: "#0e1e25",
           950: "#070f13",
         },
-        background: {
-          50: "#ecf5f9",
-          100: "#d9ecf2",
-          200: "#b3d9e6",
-          300: "#8cc6d9",
-          400: "#66b3cc",
-          500: "#409fbf",
-          600: "#338099",
-          700: "#266073",
-          800: "#19404d",
-          900: "#0d2026",
-          950: "#061013",
-        },
+        background: "#f3f9fb",
         primary: {
           50: "#ebf5f9",
           100: "#d7ebf4",

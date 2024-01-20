@@ -4,6 +4,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import type { Transaction } from "../types/transaction.types";
 import { Button, List } from "./library";
 import { createEmptyTransaction } from "../utils/transaction.utils";
+import {
+  Form,
+  Heading,
+  Label,
+  Subheading,
+  TextInput,
+  WhiteBackground,
+} from "./library/Form";
+import clsx from "clsx";
 
 interface Props {
   initialTransaction?: Transaction;
@@ -41,6 +50,95 @@ const TransactionInput = ({
 
   const { transaction_type, amount, posted_at, description, notes } =
     transaction;
+
+  const isSaveButtonDisabled =
+    isSubmitLoading ||
+    !transaction_type ||
+    !amount ||
+    isNaN(parseFloat(amount)) ||
+    !posted_at ||
+    !description;
+
+  return (
+    <>
+      <WhiteBackground />
+      <Form onSubmit={handleFormSubmit} className="w-80">
+        <Heading>
+          {isEditing ? "Edit " : "Add a new "}
+          <select
+            name="transaction_type"
+            value={transaction_type}
+            onChange={handleChange}
+            className={clsx(
+              "bg-white text-xl font-semibold mt-2 ml-2 px-2 rounded-md ring-1",
+              transaction_type === "EXPENSE"
+                ? "text-red-500 ring-red-300"
+                : "text-green-500 ring-green-300"
+            )}
+          >
+            <option value="EXPENSE">expense</option>
+            <option value="INCOME">income</option>
+          </select>
+        </Heading>
+        <Subheading>
+          Enter the details of your transaction to help you track your spending.
+        </Subheading>
+        <Label>
+          Amount
+          <TextInput
+            type="text"
+            name="amount"
+            value={amount}
+            onChange={handleChange}
+            placeholder="$123.45"
+          />
+        </Label>
+        <Label>
+          Description
+          <TextInput
+            type="text"
+            name="description"
+            value={description}
+            onChange={handleChange}
+            placeholder="Add a description"
+          />
+        </Label>
+        <Label>
+          Date
+          <DatePicker
+            selected={posted_at}
+            onChange={handleDatePickerChange}
+            dateFormat="MMM d, yyyy"
+            className="rounded-md py-1.5 px-3 w-full bg-background shadow-sm ring-1 ring-inset ring-gray-300 font-normal"
+          />
+        </Label>
+        {/*
+        <Label>
+          Note (optional)
+          <textarea
+            placeholder="Add a note"
+            name="notes"
+            value={notes}
+            onChange={handleChange}
+            className="rounded-md py-1.5 px-3 w-full bg-background shadow-sm ring-1 ring-inset ring-gray-300 font-normal"
+          />
+        </Label>
+            */}
+        <div className="flex flex-col gap-4 mt-4">
+          <Button theme="primary" type="submit" disabled={isSaveButtonDisabled}>
+            {isSubmitLoading ? "Loading" : "Save transaction"}
+          </Button>
+          <Button
+            theme="secondary"
+            type="submit"
+            disabled={isSaveButtonDisabled}
+          >
+            {isSubmitLoading ? "Loading" : "Save and add another"}
+          </Button>
+        </div>
+      </Form>
+    </>
+  );
 
   return (
     <form onSubmit={handleFormSubmit} className="flex flex-col">
@@ -103,22 +201,6 @@ const TransactionInput = ({
           />
         </List.Item>
       </List.Container>
-      <div className="flex flex-col gap-3">
-        <Button
-          theme="primary"
-          type="submit"
-          disabled={
-            isSubmitLoading ||
-            !transaction_type ||
-            !amount ||
-            isNaN(parseFloat(amount)) ||
-            !posted_at ||
-            !description
-          }
-        >
-          {isSubmitLoading ? "Loading" : "Add Transaction"}
-        </Button>
-      </div>
     </form>
   );
 };

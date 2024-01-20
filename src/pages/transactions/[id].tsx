@@ -5,6 +5,7 @@ import { Button } from "../../components/library";
 import TransactionInput from "../../components/TransactionInput";
 import { useTransactionQuery } from "../../hooks/transactions/useTransactionQuery";
 import { useUpdateTransactionMutation } from "../../hooks/transactions/useUpdateTransactionMutation";
+import { XButton } from "../../components/library/XButton";
 
 const EditTransaction: NextPage = () => {
   const router = useRouter();
@@ -26,18 +27,18 @@ const EditTransaction: NextPage = () => {
   }
 
   return (
-    <>
+    <div>
+      <Link href="/">
+        <a>
+          <XButton size={6} className="mb-4" />
+        </a>
+      </Link>
       <TransactionInput
         initialTransaction={transactionData}
         handleSubmit={updateTransaction}
         isSubmitLoading={isUpdateLoading}
       />
-      <Link href="/">
-        <a>
-          <Button theme="primary">Go back</Button>
-        </a>
-      </Link>
-    </>
+    </div>
   );
 };
 
