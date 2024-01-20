@@ -1,8 +1,8 @@
-import type { Transaction } from "../types/transaction.types";
+import type { RawTransaction, Transaction } from "../types/transaction.types";
 import { supabase } from "../utils/supabase.utils";
 import { checkUser } from "../utils/request.utils";
 
-export const getTransactions = async (): Promise<Transaction[]> => {
+export const getTransactions = async (): Promise<RawTransaction[]> => {
   const user = await checkUser();
 
   let { data, error, status } = await supabase
@@ -14,30 +14,23 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 
   if (error && status !== 406) throw error;
 
-  if (!data) return [];
-
-  const transactions: Transaction[] = data.map((transaction) => {
-    transaction.posted_at = new Date(transaction.posted_at);
-    return transaction;
-  });
-
-  return transactions;
+  return data ?? [];
 };
 
-export const getTransaction = async (id: string): Promise<Transaction> => {
+export const getTransaction = async (
+  id: string
+): Promise<RawTransaction | null> => {
   await checkUser();
 
   let { data, error, status } = await supabase
     .from("transactions")
-    .select("transaction_type, amount, description, notes, posted_at")
+    .select("id, transaction_type, amount, description, notes, posted_at")
     .eq("id", id)
     .single();
 
   if (error && status !== 406) throw error;
 
-  data!.posted_at = new Date(data!.posted_at);
-
-  return data as Transaction;
+  return data;
 };
 
 export const createTransaction = async (transaction: Transaction) => {
@@ -60,7 +53,7 @@ export const createTransaction = async (transaction: Transaction) => {
 export const updateTransaction = async (
   id: string,
   transaction: Transaction
-) => {
+): Promise<void> => {
   await checkUser();
 
   let { error, status } = await supabase

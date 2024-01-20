@@ -1,6 +1,6 @@
-import { format, parseJSON } from "date-fns";
+import { format } from "date-fns";
 
-import type { Transaction } from "../types/transaction.types";
+import type { RawTransaction, Transaction } from "../types/transaction.types";
 
 export const createEmptyTransaction = (): Transaction => ({
   transaction_type: "EXPENSE",
@@ -10,9 +10,19 @@ export const createEmptyTransaction = (): Transaction => ({
   notes: "",
 });
 
+export const transformRawTransaction = (
+  rawTransaction: RawTransaction
+): Transaction => ({
+  ...rawTransaction,
+  posted_at: new Date(rawTransaction.posted_at),
+});
+
 export const groupTransactionsByYearMonthDay = (
   transactions: Transaction[]
-) => {
+): {
+  label: string;
+  days: { label: string; transactions: Transaction[] }[];
+}[] => {
   const uniqueYearMonthDays = Array.from(
     new Set(
       transactions.map((transaction) =>

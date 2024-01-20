@@ -11,6 +11,10 @@ export type Transaction = {
   // TODO category
 };
 
+export type RawTransaction = Transaction & {
+  posted_at: string;
+};
+
 type TransactionDay = {
   label: string;
   transactions: Transaction[];

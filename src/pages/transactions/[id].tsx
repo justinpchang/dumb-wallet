@@ -1,62 +1,36 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
-import useStore from "../../store/useStore";
-import {
-  getTransaction,
-  getTransactions,
-  updateTransaction,
-} from "../../requests/transaction.requests";
-import { createEmptyTransaction } from "../../utils/transaction.utils";
 import { Button } from "../../components/library";
 import TransactionInput from "../../components/TransactionInput";
+import { useTransactionQuery } from "../../hooks/transactions/useTransactionQuery";
+import { useUpdateTransactionMutation } from "../../hooks/transactions/useUpdateTransactionMutation";
 
 const EditTransaction: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { getTransactionById } = useStore();
+  const { data: transactionData, isLoading } = useTransactionQuery(
+    id as string
+  );
 
-  const [transaction, setTransaction] = useState(createEmptyTransaction());
-
-  useEffect(() => {
-    async function fetchTransaction(id: string) {
-      let _transaction = getTransactionById(id);
-      if (!_transaction) {
-        _transaction = await getTransaction(id);
-        await getTransactions();
-      }
-      if (!_transaction) {
+  const { mutate: updateTransaction, isLoading: isUpdateLoading } =
+    useUpdateTransactionMutation(id as string, {
+      onSuccess: () => {
         router.push("/");
-        return;
-      }
-      _transaction.posted_at = new Date(_transaction.posted_at);
-      setTransaction(_transaction);
-    }
+      },
+    });
 
-    if (id) {
-      fetchTransaction(id as string);
-    }
-  }, [id, getTransactionById, router]);
-
-  const handleSubmit = async () => {
-    try {
-      await updateTransaction(id as string, transaction);
-      router.push("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  if (isLoading || !transactionData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <TransactionInput
-        isEditing
-        transaction={transaction}
-        setTransaction={setTransaction}
-        handleSubmit={handleSubmit}
+        initialTransaction={transactionData}
+        handleSubmit={updateTransaction}
+        isSubmitLoading={isUpdateLoading}
       />
       <Link href="/">
         <a>

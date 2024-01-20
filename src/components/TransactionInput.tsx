@@ -1,36 +1,30 @@
 import React, { useState } from "react";
-
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 import type { Transaction } from "../types/transaction.types";
 import { Button, List } from "./library";
+import { createEmptyTransaction } from "../utils/transaction.utils";
 
 interface Props {
-  transaction: Transaction;
-  setTransaction: (newTransaction: Transaction) => any;
-  handleSubmit: () => Promise<any>;
-  isEditing?: boolean;
+  initialTransaction?: Transaction;
+  handleSubmit: (transaction: Transaction) => any;
+  isSubmitLoading: boolean;
 }
 
 const TransactionInput = ({
-  transaction,
-  setTransaction,
+  initialTransaction,
   handleSubmit,
-  isEditing = false,
+  isSubmitLoading,
 }: Props) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [transaction, setTransaction] = useState<Transaction>(
+    initialTransaction ?? createEmptyTransaction()
+  );
+
+  const isEditing = Boolean(initialTransaction);
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
-    try {
-      await handleSubmit();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSubmit(transaction);
   };
 
   const handleChange = (e: React.ChangeEvent<any>) =>
@@ -114,7 +108,7 @@ const TransactionInput = ({
           theme="primary"
           type="submit"
           disabled={
-            isLoading ||
+            isSubmitLoading ||
             !transaction_type ||
             !amount ||
             isNaN(parseFloat(amount)) ||
@@ -122,7 +116,7 @@ const TransactionInput = ({
             !description
           }
         >
-          {isLoading ? "Loading" : "Add Transaction"}
+          {isSubmitLoading ? "Loading" : "Add Transaction"}
         </Button>
       </div>
     </form>

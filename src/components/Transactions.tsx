@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import useStore from "../store/useStore";
 import { formatAsCurrency } from "../utils/format.utils";
 import { Animated, Button, List } from "./library";
-import { deleteTransaction } from "../requests/transaction.requests";
 import { useRouter } from "next/router";
+import { useGroupedTransactionsQuery } from "../hooks/transactions/useGroupedTransactionsQuery";
+import { useDeleteTrasactionMutation } from "../hooks/transactions/useDeleteTransactionMutation";
 
 const Transactions = () => {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string>();
 
-  const { groupedTransactions, refreshTransactions } = useStore();
-  const router = useRouter();
+  const { data: groupedTransactions } = useGroupedTransactionsQuery();
+  const { mutate: deleteTransaction } = useDeleteTrasactionMutation();
 
-  useEffect(() => {
-    refreshTransactions();
-  }, [refreshTransactions]);
+  const router = useRouter();
 
   const handleListItemClick =
     (transactionId: string | undefined) => (ev: React.MouseEvent) => {
@@ -48,13 +46,14 @@ const Transactions = () => {
       if (
         transactionId &&
         confirm("Are you sure you want to delete this transaction?")
-      )
-        deleteTransaction(transactionId).then(refreshTransactions);
+      ) {
+        deleteTransaction(transactionId);
+      }
     };
 
   return (
     <>
-      {groupedTransactions.map((month) => (
+      {groupedTransactions?.map((month) => (
         <List.Container key={`tm-${month.label}`}>
           <List.Header key={`tm-header-${month.label}`}>
             {month.label}

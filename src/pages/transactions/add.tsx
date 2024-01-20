@@ -1,33 +1,25 @@
-import { useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
-import { createTransaction } from "../../requests/transaction.requests";
 import { Button } from "../../components/library";
 import TransactionInput from "../../components/TransactionInput";
-import { createEmptyTransaction } from "../../utils/transaction.utils";
+import { useAddTransactionMutation } from "../../hooks/transactions/useAddTransactionMutation";
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
 
-  const [transaction, setTransaction] = useState(createEmptyTransaction());
-
-  const handleSubmit = async () => {
-    try {
-      await createTransaction(transaction);
-      router.push("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { mutate: addTransaction, isLoading: isAddLoading } =
+    useAddTransactionMutation({
+      onSuccess: () => {
+        router.push("/");
+      },
+    });
 
   return (
     <>
       <TransactionInput
-        transaction={transaction}
-        setTransaction={setTransaction}
-        handleSubmit={handleSubmit}
+        handleSubmit={addTransaction}
+        isSubmitLoading={isAddLoading}
       />
       <Link href="/">
         <a>
