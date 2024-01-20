@@ -74,7 +74,7 @@ const Transactions = () => {
                   <div className="w-full flex justify-between items-center">
                     <div>
                       <div>{transaction.description}</div>
-                      <div className="text-sm leading-3 text-gray-400">
+                      <div className="text-base leading-3 text-gray-400">
                         {/* TODO: category */}
                       </div>
                     </div>
