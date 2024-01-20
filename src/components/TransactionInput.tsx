@@ -13,6 +13,8 @@ import {
   WhiteBackground,
 } from "./library/Form";
 import clsx from "clsx";
+import Link from "next/link";
+import { XButton } from "./library/XButton";
 
 interface Props {
   initialTransaction?: Transaction;
@@ -62,7 +64,12 @@ const TransactionInput = ({
   return (
     <>
       <WhiteBackground />
-      <Form onSubmit={handleFormSubmit} className="w-80">
+      <Form onSubmit={handleFormSubmit} className="mx-4 md:m-auto md:w-80">
+        <Link href="/">
+          <a>
+            <XButton size={6} className="mb-4" />
+          </a>
+        </Link>
         <Heading>
           {isEditing ? "Edit " : "Add a new "}
           <select

@@ -17,11 +17,6 @@ const AddTransaction: NextPage = () => {
 
   return (
     <div>
-      <Link href="/">
-        <a>
-          <XButton size={6} className="mb-4" />
-        </a>
-      </Link>
       <TransactionInput
         handleSubmit={addTransaction}
         isSubmitLoading={isAddLoading}
