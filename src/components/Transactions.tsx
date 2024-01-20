@@ -96,14 +96,14 @@ const Transactions = () => {
                       <hr />
                       <div className="pl-3">
                         <Button
-                          theme="ghost"
+                          theme="secondary"
                           onClick={handleEditButtonClick(transaction.id)}
                         >
                           Edit
                         </Button>
                         <br />
                         <Button
-                          theme="ghost"
+                          theme="secondary"
                           onClick={handleDeleteButtonClick(transaction.id)}
                         >
                           Delete
